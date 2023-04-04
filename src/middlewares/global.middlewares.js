@@ -21,7 +21,7 @@ export const validUser = async (req, res, next) => {
 
     const user = await userService.findByIdService(id);
 
-    if (!user) {
+    if (!user || !user.id) {
       return res.status(400).send({ mensage: "User not found." });
     }
 
