@@ -22,3 +22,12 @@ export const searchByTitleService = (title) =>
 export const byUserService = (id) =>
   News.find({ user: id }).sort({ _id: -1 }).populate("user");
 /*OBS: ao usar o export default para objetos (desconstruido) é necessário importar como um objeto e depois usar .createService (exemplo). Para corrigir isso optou-se por retirar o default, tanto no Service quanto no Controller*/
+
+export const updateService = (id, title, text, banner) =>
+  News.findOneAndUpdate(
+    { _id: id },
+    { title, text, banner },
+    { rawResult: true }
+  ).populate("user");
+
+export const deleteService = (id) => News.findByIdAndDelete({ _id: id });

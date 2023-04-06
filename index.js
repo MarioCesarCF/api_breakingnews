@@ -14,7 +14,7 @@ const port = process.env.PORT || 27017;
 connectDatabase();
 app.use(express.json());
 app.use('/user', userRoute);
-app.use("/auth", authRoute);
-app.use("/news", newsRoute);
+app.use('/auth', authRoute);
+app.use('/news', newsRoute);
 
 app.listen(port, () => console.log(`Server listen on port ${port}`));

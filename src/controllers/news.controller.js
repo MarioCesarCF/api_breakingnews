@@ -6,6 +6,8 @@ import {
   findNewsByIdService,
   searchByTitleService,
   byUserService,
+  updateService,
+  deleteService,
 } from "../services/news.service.js";
 
 export const create = async (req, res) => {
@@ -180,6 +182,44 @@ export const byUser = async (req, res) => {
         userAvatar: item.user.avatar,
       })),
     });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export const update = async (req, res) => {
+  try {
+    const { title, text, banner } = req.body;
+    const { id } = req.params;
+
+    if (!title && !text && !banner) {
+      res
+        .status(400)
+        .send({ message: "Submit at least one field to update the news!" });
+    }
+
+    const news = await findNewsByIdService(id);
+
+    //No caso, nessa validação no if, para verificar se o usuário que criou a noticia é o mesmo que quer alterar, usa só um = por que o primeiro é um ojeto e o segundo uma string
+    if (news.user._id != req.userId) {
+      return res.status(400).send({ message: "You didn't update this post!" });
+    }
+
+    await updateService(id, title, text, banner);
+
+    return res.send({ message: "Post successfully update!" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export const deleteNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await deleteService(id);
+
+    return res.send({ message: "Post successfully delete!" });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
