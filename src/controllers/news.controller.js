@@ -8,6 +8,10 @@ import {
   byUserService,
   updateService,
   deleteService,
+  likeNewsService,
+  deleteLikeNewsService,
+  addCommentNewsService,
+  removeCommentNewsService,
 } from "../services/news.service.js";
 
 export const create = async (req, res) => {
@@ -142,7 +146,9 @@ export const searchByTitle = async (req, res) => {
     const news = await searchByTitleService(title);
 
     if (news.length === 0) {
-      return res.status(400).send({ message: "There are no news with this title!" });
+      return res
+        .status(400)
+        .send({ message: "There are no news with this title!" });
     }
 
     return res.send({
@@ -202,7 +208,7 @@ export const update = async (req, res) => {
 
     //No caso, nessa validação no if, para verificar se o usuário que criou a noticia é o mesmo que quer alterar, usa só um = por que o primeiro é um ojeto e o segundo uma string
     if (news.user._id != req.userId) {
-      return res.status(400).send({ message: "You didn't update this post!" });
+      return res.status(400).send({ message: "You didn't update this news!" });
     }
 
     await updateService(id, title, text, banner);
@@ -217,9 +223,82 @@ export const deleteNews = async (req, res) => {
   try {
     const { id } = req.params;
 
+    const news = await findNewsByIdService(id);
+
+    if (news.user._id != req.userId) {
+      return res.status(400).send({ message: "You didn't delete this news!" });
+    }
+
     await deleteService(id);
 
     return res.send({ message: "Post successfully delete!" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export const likeNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const newsLiked = await likeNewsService(id, userId);
+
+    if (!newsLiked) {
+      await deleteLikeNewsService(id, userId);
+      return res.status(200).send({ message: "Like successfully removed!" });
+    }
+
+    res.send({ message: "Like done successfully!" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export const addCommentNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+    const { comment } = req.body;
+
+    if (!comment) {
+      return res.status(400).send({ message: "Write a message to comment!" });
+    }
+
+    await addCommentNewsService(id, comment, userId);
+
+    res.send({ message: "Comment successfully completed!" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export const removeCommentNews = async (req, res) => {
+  try {
+    const { idNews, idComment } = req.params;
+    const userId = req.userId;
+
+    const commentDeleted = await removeCommentNewsService(
+      idNews,
+      idComment,
+      userId
+    );
+
+    //LEMBRAR DE: SEMPRE QUE USAR {} APÓS => TEM DE TER RETURN, OU ENTÃO NÃO COLOCAR {} E FAZER INLINE
+    const commentFinder = commentDeleted.comments.find((comment) => 
+      comment.idComment === idComment
+    );
+
+    if (!commentFinder) {
+      return res.status(404).send({ message: "Comment not found!" });
+    }
+
+    if (commentFinder.userId !== userId) {
+      return res.status(400).send({ message: "You can't delete this comment!" });
+    }
+    
+
+    res.send({ message: "Comment successfully remove!" });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
