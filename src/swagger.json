@@ -14,7 +14,7 @@
       "description": "Render Server"
     },
     {
-      "url": "http://localhost:3000",
+      "url": "http://localhost:27017",
       "description": "Local Server"
     }
   ],
@@ -33,9 +33,9 @@
               "examples": {
                 "Users": {
                   "value": {
-                    "name": "Cacau Lima",
-                    "username": "cacode",
-                    "email": "clima@gmail.com",
+                    "name": "Mario Cesar",
+                    "username": "mcdev",
+                    "email": "teste@gmail.com",
                     "password": "1234567",
                     "avatar": "https://i.imgur.com/Ry1cb5M.png",
                     "background": "https://images.wallpapersden.com/image/download/triangle-8k-blue-pattern_bGZlbmiUmZqaraWkpJRmbmdlrWZlbWU.jpg"
@@ -194,7 +194,7 @@
               "examples": {
                 "User": {
                   "value": {
-                    "email": "clima@gmail.com",
+                    "email": "teste@gmail.com",
                     "password": "1234567"
                   }
                 }
