@@ -33,7 +33,7 @@ const storageTypes = {
   }),
   s3: multerS3({    
     s3: s3,
-    bucket: String(bucketName),
+    bucket: bucketName,
     contentType: multerS3.AUTO_CONTENT_TYPE,
     acl: "public-read",
     key: (req, file, cb) => {
