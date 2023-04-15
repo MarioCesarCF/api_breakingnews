@@ -1,9 +1,9 @@
 require("dotenv").config();
+const aws = require("aws-sdk");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
 const crypto = require("crypto");
-const aws = require("aws-sdk");
-const multerS3 = require("multer-s3");
 
 const bucketName = process.env.BUCKET_AWS;
 const region = process.env.AWS_DEFAULT_REGION;
